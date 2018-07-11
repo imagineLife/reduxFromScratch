@@ -1,29 +1,46 @@
-import { createStore } from "redux";
-
-//was 4.
-const mainReducer = function(state=0, action){
-//9
-	if(action.type === "INC"){
-		return state+action.payload;
-	}
-
-//11
-	if(action.type === "DEC"){
-		return state-action.payload;
-	}
-}
+import { combineReducers, createStore } from "redux";
 
 //6. Make an initial store
 const initialState = {
-	name:'Jake',
-	age: '31',
-	height: "5'7",
-	hobbies: ["guitar", 'software dev', 'cooking'],
+	user:{
+		name:'Jake',
+		age: 31,
+		height: "5'7",
+	},
+	hobbies: ["guitar", 'software dev'],
 	myInt: 0
 }
 
-//5.
-const devstore = createStore(mainReducer, 0)
+//Break into its own file
+const userReducer = (state=initialState.user, action) => {
+	switch(action.type){
+		case ("CHANGE_NAME"):
+			state = Object.assign({}, state, {name: action.payload});
+			break;
+
+		case ("CHANGE_AGE"):
+			state = Object.assign({}, state, {age: action.payload});
+	}
+	return state;
+}
+
+//Break into its own file
+const hobbiesReducer = (state=initialState.hobbies, action) => {
+	switch(action.type){
+		case ("ADD_HOBBY"):
+			state = [...state, action.payload]
+		break;
+	}
+	return state;
+}
+
+//Break into its own file
+const reducedReducers = combineReducers({
+	user: userReducer,
+	hobbies: hobbiesReducer
+})
+
+const devstore = createStore(reducedReducers)
 
 //7. subscribe
 devstore.subscribe(() => {
@@ -31,12 +48,10 @@ devstore.subscribe(() => {
 }) 
 
 //8.
-devstore.dispatch({type: "INC", payload: 14})
-devstore.dispatch({type: "INC", payload: 23})
-devstore.dispatch({type: "INC", payload: 11})
-
-//11.
-devstore.dispatch({type: "DEC", payload: 31})
+devstore.dispatch({type: "CHANGE_NAME", payload: 'Tom'})
+devstore.dispatch({type: "ADD_HOBBY", payload: 'cooking'})
+devstore.dispatch({type: "CHANGE_AGE", payload: 14})
+devstore.dispatch({type: "CHANGE_NAME", payload: 'sally'})
 
 /*
 NOTES
