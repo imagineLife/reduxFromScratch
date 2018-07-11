@@ -5,8 +5,8 @@ const Header = () => (
     <header>
         <nav className="navbar" role="navigation" aria-label="main navigation">
             <div className="navbar-brand">
-                <a className="navbar-item" href="/">
-                    <img width="120" alt=""/>
+                <a className="navbar-item" href="//imaginelife.github.io">
+                    <p >Jake</p>
                 </a>
             </div>
         </nav>
