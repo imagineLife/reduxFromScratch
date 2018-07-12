@@ -1,4 +1,4 @@
-import { combineReducers, createStore } from "redux";
+import { combineReducers, createStore, applyMiddleware } from "redux";
 
 //6. Make an initial store
 const initialState = {
@@ -40,7 +40,15 @@ const reducedReducers = combineReducers({
 	hobbies: hobbiesReducer
 })
 
-const devstore = createStore(reducedReducers)
+const logger = (store) => (next) => (action) => {
+	console.log('action fired!');
+	console.log(action.type);
+	next(action)
+}
+
+const middleware = applyMiddleware(logger);
+
+const devstore = createStore(reducedReducers, middleware)
 
 //7. subscribe
 devstore.subscribe(() => {
@@ -55,50 +63,21 @@ devstore.dispatch({type: "CHANGE_NAME", payload: 'sally'})
 
 /*
 NOTES
-1.  install redux
-	npm i -S redux
-2.Redux NOT part of react. just works well with react
-3. import createStore from redux
-4. make reducer
-5. make store
-	give store initial state
-	const store = createStore(reducer, initialState)
-6. make an initial state
-7. set store.subscribe!
-8. create first dispatch command
-	store.dispatch({type: "INC", payload: 1})
+adding middleware
+0. import applyMiddleware from redux
 
-WILL NOTWORK RIGHT NOW
+1. add third command to createStore command
 
-9. update reducer
-	FROM 
-		const mainReducer = () => {}
-	TO
-		const mainReducer = (state, action) => {
-		
-		}
+2. create middleware function
+	const middleware = applyMiddleware(logger);
 
-	NOTE: 
-		REDUCER CHANGES THE STATE, based on the command from action.
+3.create the actual middleware function
+	const logger = (store) => (next) => (action) => {
+		console.log('action fired!')
+		console.log(action.type)
+	}
 
-10. Fill in reducer
-	include the if inc
-	NOTE: to get this to work, I had to make state, in reducer, have initial value
-	this is comperable to building an initial state 
-	 and setting state to state=initialState in reducer
-11. Add a decrement to reducer and dispatch a decrement object
-12. Make the reducer READ the action payload
-	return state+action.payload;
-
-	NOTES: in dispatch action, action HAS to have 'type' keyword
-	payload can be whatever i want
-
-	NOTICE:
-	a user dispatches an action.
-		the action is'read' by the reducer and updates the store
-			WITHOUT the user 'updating' the store directly
-			VERY interesting!
-
+4.
 
 
 
